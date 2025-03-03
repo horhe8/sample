@@ -1,0 +1,166 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Hide text in navigation links when sidebar is collapsed */
+.sidebar.collapsed .sidebar-nav .text {
+    display: none;
+}
+
+/* Adjust icon margin when sidebar is collapsed */
+.sidebar.collapsed .sidebar-nav .icon {
+    margin-right: 0;
+}
+
+
+
+/* Main content */
+.main-content {
+    flex-grow: 1;
+    background-color: #ecf0f1;
+}
+
+/* Navbar */
+/* Navbar */
+.navbar {
+    background: linear-gradient(to right, #7c3aed, #4f46e5); /* Gradient from purple-600 to indigo-600 */
+    color: white;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+    display: flex;
+    justify-content: space-between; /* Align items to the left and right */
+    align-items: center; /* Vertically center items */
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: bold; /* font-bold */
+}
+
+#time-date {
+    display: flex;
+    gap: 8px; /* Space between time and date */
+    align-items: center;
+}
+/* Main Content */
+.main-content {
+    padding: 24px; /* p-6 */
+}
+
+/* Content Area */
+.content {
+    margin-top: 24px; /* mt-6 */
+}
+
+.content .chart-container {
+    background-color: white; /* bg-white */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+    padding: 24px; /* p-6 */
+}
+
+.content .chart-container h2 {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: bold; /* font-bold */
+    color: #1f2937; /* text-gray-800 */
+    margin-bottom: 24px; /* mb-6 */
+}
+
+.content .chart-container canvas {
+    height: 384px; /* h-96 */
+}
+
+/* Chart container */
+.chart-container {
+    width: 90%;
+    height: 40%;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar-header h2,
+    .sidebar-nav li a .text {
+        display: none;
+    }
+
+    .sidebar-nav li a::after {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.notification-container {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.notification-container.hide {
+    opacity: 0;
+}
+
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    color: white;
+    z-index: 1000;
+    animation: slideIn 0.5s ease-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notification.success {
+    background-color: #120a32;  /* Green */
+}
+
+.notification.error {
+    background-color: #f44336;  /* Red */
+}
+
+/* Animation for notifications */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Main Content Styles */
+.main-content {
+    flex-grow: 1;
+    background-color: #ecf0f1;
+    padding: 20px;
+}
+
+@media (max-width: 480px) {
+    .navbar h1 {
+        font-size: 1.2rem;
+    }
+
+    .content {
+        padding: 10px;
+    }
+}
+
+

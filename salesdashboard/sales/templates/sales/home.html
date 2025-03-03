@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InputPro</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'sales/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'sales/css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Display Welcome Message -->
+    {% if user.is_authenticated %}
+    <div id="login-notification" class="notification-container">
+        <div class="notification success">
+            Welcome, {{ username }}!  <!-- Use username passed from the view -->
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Sidebar -->
+        <div class="sidebar bg-gradient-to-b from-gray-800 to-gray-900 text-white w-64 min-h-screen flex flex-col transition-all duration-300" id="sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header p-4 border-b border-gray-700 flex items-center justify-between">
+                <!-- Logo -->
+                <h2 class="text-xl font-bold whitespace-nowrap">InputPro</h2>
+                <!-- Toggle Button (Visible only on mobile screens) -->
+                <button id="toggleSidebar" class="text-white focus:outline-none md:hidden">☰</button>
+            </div>
+
+            <!-- Sidebar Navigation -->
+            <ul class="sidebar-nav flex-1 p-4 space-y-2">
+                <li>
+                    <a href="#" class="nav-link flex items-center p-2 rounded hover:bg-gray-700 transition-all duration-300 transform hover:scale-105" data-page="dashboard">
+                        <span class="icon mr-2">🏠</span>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link flex items-center p-2 rounded hover:bg-gray-700 transition-all duration-300 transform hover:scale-105" data-page="data-entry">
+                        <span class="icon mr-2">📊</span>
+                        <span class="text">Data Entry</span>
+                    </a>
+                </li>
+                    <form action="{% url 'logout' %}" method="post" class="p-4 border-t border-gray-700">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-2 px-4 rounded-md hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 transform hover:scale-105">
+                            Logout
+                        </button>
+                    </form>
+                <li>
+
+                </li>
+            </ul>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Navbar -->
+            <div class="navbar">
+        <h1>Dashboard</h1>
+        <!-- Time and Date Display -->
+        <!-- Time and Date Display -->
+        <div id="time-date">
+             <span id="current-time"></span> <span id="current-date"></span>
+        </div>
+
+    </div>
+
+        <!-- Dashboard Content -->
+        <div class="content" id="dashboard">
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        
+
+        <div class="container mx-auto p-8 flex flex-row gap-8">
+            <!-- Data Entry Form (Left Side) -->
+            <div id="data-entry" class="bg-white p-8 rounded-lg shadow-lg w-1/4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Data Entry</h2>
+                <form id="salesForm" method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Date Input -->
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" name="date" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+        
+
+                    
+                    <!-- Sales Input -->
+                    <div>
+                        <label for="sales" class="block text-sm font-medium text-gray-700">Sales Amount</label>
+                        <input type="text" id="sales" name="sales" required placeholder="Enter sales amount"
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                               onblur="formatSalesInput(this)">
+                    </div>
+                    
+                    <script>
+                    function formatSalesInput(input) {
+                        let value = input.value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except '.'
+                        
+                        if (value) {
+                            // Convert to float and format with commas and two decimal places
+                            let formattedValue = parseFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            input.value = formattedValue;
+                        }
+                    }
+                    </script>
+                    
+
+
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Submit
+                    </button>
+                </form>
+            </div>
+        
+            <div class="bg-white p-8 rounded-lg shadow-lg w-3/4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Sales Data</h2>
+            
+                <!-- Date Filter -->
+                <div class="mb-6">
+                    <label for="filterDate" class="block text-sm font-medium text-gray-700">Filter by Date</label>
+                    <input type="date" id="filterDate"
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            
+                <!-- Sales Table Container with Fixed Height and Scrollable -->
+                <div class="h-80 overflow-y-auto"> <!-- Fixed height and scrollable -->
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted At</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Sales data will be dynamically inserted here -->
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">2025-03-03</td>
+                                <td class="px-6 py-4 whitespace-nowrap">234.00</td>
+                                <td class="px-6 py-4 whitespace-nowrap">2025-03-03 14:35:22</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button class="text-blue-600 hover:text-blue-900">Edit</button>
+                                    <button class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+                                </td>
+                            </tr>
+                            <!-- Repeat for other rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<script src="{% static 'sales/js/script.js' %}"></script>
+</body>
+</html>
